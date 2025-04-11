@@ -2,8 +2,17 @@
   width: 100%;
   height: 200px;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr min-content min-content 1fr;
   place-items: center;
   background-color: var(--primary-color);
-  color: var(--font-color)
+  color: var(--font-color);
+  gap: 16px;
+}
+
+.title {
+  white-space: nowrap;
+}
+
+.logo {
+  border-radius: 50%;
 }

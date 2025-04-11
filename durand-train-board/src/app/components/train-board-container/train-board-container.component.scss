@@ -1,4 +1,11 @@
 .container {
   min-height: 100vh;
-  background-color: green;
+  background-color: #fff;
+}
+
+.content {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 300px);
+  gap: 8px;
 }
