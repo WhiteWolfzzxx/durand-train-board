@@ -28,19 +28,20 @@
     <mat-form-field appearance="outline" class="full-width">
         <mat-label>Road Numbers</mat-label>
         <mat-chip-grid #chipGrid aria-label="Enter Road Numbers" formControlName="roadNumbers">
-          @for (keyword of keywords(); track keyword) {
-            <mat-chip-row (removed)="removeKeyword(keyword)">
-              {{keyword}}
-              <button matChipRemove [attr.aria-label]="'remove ' + keyword">
+          @for (roadNumber of roadNumbers(); track roadNumber) {
+            <mat-chip-row (removed)="removeRoadNumber(roadNumber)">
+              {{roadNumber}}
+              <button matChipRemove [attr.aria-label]="'remove ' + roadNumber">
                 <mat-icon>cancel</mat-icon>
               </button>
             </mat-chip-row>
           }
         </mat-chip-grid>
         <input
-          placeholder="New keyword..."
+          placeholder="Enter Road Numbers"
           [matChipInputFor]="chipGrid"
-          (matChipInputTokenEnd)="add($event)"
+          (matChipInputTokenEnd)="addRoadNumber($event)"
         />
+        <mat-hint>Press Enter After Every Entry</mat-hint>
       </mat-form-field>
 </div>

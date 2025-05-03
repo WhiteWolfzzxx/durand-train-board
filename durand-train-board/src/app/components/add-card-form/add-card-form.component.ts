@@ -1,6 +1,6 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -30,7 +30,7 @@ export class AddCardFormComponent implements OnInit {
   formGroup: FormGroup<AddCardForm>;
   engineerNameOptions: string[] = ['Jain Doe', 'James McGill', 'Walter White'];
   filteredOptions: Observable<string[]>;
-  readonly keywords = signal(['angular', 'how-to', 'tutorial', 'accessibility']);
+  readonly roadNumbers: WritableSignal<string[]> = signal([]);
 
   announcer = inject(LiveAnnouncer);
 
@@ -58,8 +58,8 @@ export class AddCardFormComponent implements OnInit {
     );
   }
 
-  removeKeyword(keyword: string) {
-    this.keywords.update(keywords => {
+  removeRoadNumber(keyword: string) {
+    this.roadNumbers.update(keywords => {
       const index = keywords.indexOf(keyword);
       if (index < 0) {
         return keywords;
@@ -71,12 +71,12 @@ export class AddCardFormComponent implements OnInit {
     });
   }
 
-  add(event: MatChipInputEvent): void {
+  addRoadNumber(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
     // Add our keyword
     if (value) {
-      this.keywords.update(keywords => [...keywords, value]);
+      this.roadNumbers.update(keywords => [...keywords, value]);
     }
 
     // Clear the input value
