@@ -1,11 +1,24 @@
 <div class="form-container" [formGroup]="formGroup">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="full-width"> 
         <mat-label>Route</mat-label>
         <mat-select formControlName="route">
             <mat-option *ngFor="let routeOption of routeOptions" [value]="routeOption">{{routeOption}}</mat-option>
         </mat-select>
-      </mat-form-field>
-      
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Engineer</mat-label>
+        <input type="text"
+               aria-label="Engineer Name"
+               matInput
+               formControlName="engineerName"
+               [matAutocomplete]="auto">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          @for (option of filteredOptions | async; track option) {
+            <mat-option [value]="option">{{option}}</mat-option>
+          }
+        </mat-autocomplete>
+    </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
         <mat-label>Road Reporting Mark</mat-label>
