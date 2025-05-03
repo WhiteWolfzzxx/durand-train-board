@@ -1,0 +1,14 @@
+<div class="form-container" [formGroup]="formGroup">
+    <mat-form-field appearance="outline">
+        <mat-label>Route</mat-label>
+        <mat-select formControlName="route">
+            <mat-option *ngFor="let routeOption of routeOptions" [value]="routeOption">{{routeOption}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Road Reporting Mark</mat-label>
+        <input matInput placeholder="GTW" formControlName="road">
+    </mat-form-field>
+</div>
