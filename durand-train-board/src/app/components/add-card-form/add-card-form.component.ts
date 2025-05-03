@@ -1,8 +1,11 @@
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { map, Observable, startWith } from 'rxjs';
@@ -16,7 +19,9 @@ import { map, Observable, startWith } from 'rxjs';
     MatSelectModule, 
     ReactiveFormsModule, 
     CommonModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatChipsModule,
+    MatIconModule
   ],
   templateUrl: './add-card-form.component.html',
   styleUrl: './add-card-form.component.scss'
@@ -25,6 +30,9 @@ export class AddCardFormComponent implements OnInit {
   formGroup: FormGroup<AddCardForm>;
   engineerNameOptions: string[] = ['Jain Doe', 'James McGill', 'Walter White'];
   filteredOptions: Observable<string[]>;
+  readonly keywords = signal(['angular', 'how-to', 'tutorial', 'accessibility']);
+
+  announcer = inject(LiveAnnouncer);
 
   routeOptions = [
     'Ann Arbor',
@@ -40,13 +48,39 @@ export class AddCardFormComponent implements OnInit {
     this.formGroup = this.fb.group({
       route: this.fb.control('', {nonNullable:true}),
       road: this.fb.control('', {nonNullable:true}),
-      engineerName: this.fb.control('', {nonNullable:true})
+      engineerName: this.fb.control('', {nonNullable:true}),
+      roadNumbers: this.fb.control([])
     });
 
     this.filteredOptions = this.formGroup.controls.engineerName.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
     );
+  }
+
+  removeKeyword(keyword: string) {
+    this.keywords.update(keywords => {
+      const index = keywords.indexOf(keyword);
+      if (index < 0) {
+        return keywords;
+      }
+
+      keywords.splice(index, 1);
+      this.announcer.announce(`removed ${keyword}`);
+      return [...keywords];
+    });
+  }
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our keyword
+    if (value) {
+      this.keywords.update(keywords => [...keywords, value]);
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
   }
 
   private _filter(value: string): string[] {
@@ -60,4 +94,5 @@ class AddCardForm {
   route: FormControl<string>;
   road: FormControl<string>;
   engineerName: FormControl<string>;
+  roadNumbers: FormControl<any>;
 }
