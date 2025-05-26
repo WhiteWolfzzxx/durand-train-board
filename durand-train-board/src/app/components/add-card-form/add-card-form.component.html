@@ -1,5 +1,6 @@
-<div class="form-container" [formGroup]="formGroup">
-    <mat-form-field appearance="outline" class="full-width"> 
+<mat-dialog-content>
+  <div class="form-container" [formGroup]="formGroup">
+    <mat-form-field appearance="outline" class="full-width">
         <mat-label>Route</mat-label>
         <mat-select formControlName="route">
             <mat-option *ngFor="let routeOption of routeOptions" [value]="routeOption">{{routeOption}}</mat-option>
@@ -9,10 +10,10 @@
     <mat-form-field appearance="outline" class="full-width">
         <mat-label>Engineer</mat-label>
         <input type="text"
-               aria-label="Engineer Name"
-               matInput
-               formControlName="engineerName"
-               [matAutocomplete]="auto">
+                aria-label="Engineer Name"
+                matInput
+                formControlName="engineerName"
+                [matAutocomplete]="auto">
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
           @for (option of filteredOptions | async; track option) {
             <mat-option [value]="option">{{option}}</mat-option>
@@ -26,22 +27,36 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Road Numbers</mat-label>
-        <mat-chip-grid #chipGrid aria-label="Enter Road Numbers" formControlName="roadNumbers">
-          @for (roadNumber of roadNumbers(); track roadNumber) {
-            <mat-chip-row (removed)="removeRoadNumber(roadNumber)">
-              {{roadNumber}}
-              <button matChipRemove [attr.aria-label]="'remove ' + roadNumber">
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </mat-chip-row>
-          }
-        </mat-chip-grid>
-        <input
-          placeholder="Enter Road Numbers"
-          [matChipInputFor]="chipGrid"
-          (matChipInputTokenEnd)="addRoadNumber($event)"
-        />
-        <mat-hint>Press Enter After Every Entry</mat-hint>
-      </mat-form-field>
-</div>
+      <mat-label>Road Numbers</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Enter Road Numbers" formControlName="roadNumbers">
+        @for (roadNumber of roadNumbers(); track roadNumber) {
+          <mat-chip-row (removed)="removeRoadNumber(roadNumber)">
+            {{roadNumber}}
+            <button matChipRemove [attr.aria-label]="'remove ' + roadNumber">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input
+        placeholder="Enter Road Numbers"
+        [matChipInputFor]="chipGrid"
+        (matChipInputTokenEnd)="addRoadNumber($event)"
+      />
+      <mat-hint>Press Enter After Every Entry</mat-hint>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button>
+    EDIT USERS
+  </button>
+  <button mat-button mat-dialog-close>
+    CLOSE
+  </button>
+  <button mat-raised-button class="add-button">
+    ADD
+    <mat-icon aria-hidden="false" aria-label="add card" fontIcon="add"></mat-icon>
+  </button>
+</mat-dialog-actions>

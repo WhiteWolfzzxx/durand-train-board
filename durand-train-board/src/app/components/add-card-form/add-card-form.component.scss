@@ -1,8 +1,13 @@
 .form-container {
-    width: calc(100% - 40px);
-    margin: 20px;
+    width: calc(100% - 20px);
+    margin: 10px;
 }
 
 .full-width {
     width: 100%;
+}
+
+.add-button {
+  background-color: var(--primary-color) !important;
+  color: var(--font-color) !important;
 }

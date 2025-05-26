@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -14,14 +16,16 @@ import { map, Observable, startWith } from 'rxjs';
 @Component({
   selector: 'app-add-card-form',
   imports: [
-    MatFormFieldModule, 
-    MatInputModule, 
-    MatSelectModule, 
-    ReactiveFormsModule, 
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    ReactiveFormsModule,
     CommonModule,
     MatAutocompleteModule,
     MatChipsModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
   ],
   templateUrl: './add-card-form.component.html',
   styleUrl: './add-card-form.component.scss'
