@@ -19,6 +19,11 @@ export class EngineerService {
       .pipe(catchError(e => throwError(() => new Error(e.json))));
   }
 
+  update(engineer: EngineerSchema): Observable<EngineerSchema> {
+    return of(this.electron.ipcRenderer.sendSync('update-engineer', engineer))
+      .pipe(catchError(e => throwError(() => new Error(e.json))));
+  }
+
   delete(id: number): Observable<EngineerSchema> {
     return of(this.electron.ipcRenderer.sendSync('delete-engineer', id))
       .pipe(catchError(e => throwError(() => new Error(e.json))));

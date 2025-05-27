@@ -66,6 +66,15 @@ const createWindow = async () => {
         }
     });
 
+    ipcMain.on('update-engineer', async (event:any, _engineer: EngineerSchema) => {
+      try {
+        await engineerRepo.save(_engineer);
+        event.returnValue = _engineer;
+      } catch (err) {
+        throw err;
+      }
+  })
+
     ipcMain.on('delete-engineer', async (event:any, _engineerId: number) => {
         try {
             const engineerToDelete = await engineerRepo.find({

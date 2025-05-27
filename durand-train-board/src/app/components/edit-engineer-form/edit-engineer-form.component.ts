@@ -54,9 +54,9 @@ export class EditEngineerFormComponent implements OnInit {
     engineer.image3 = this.formGroup.controls.image3.value;
 
     if (!engineer.id) {
-      this.engineerService.add(engineer);
+      this.engineerService.add(engineer).subscribe();
     } else {
-      console.error('Edit existing not implemented')
+      this.engineerService.update(engineer).subscribe();
     }
 
     this.closeDialog();
