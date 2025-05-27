@@ -36,6 +36,7 @@ import { EngineerSchema } from '../../schemas/engineer.schema';
 export class AddCardFormComponent implements OnInit {
   formGroup: FormGroup<AddCardForm>;
   engineerNameOptions: {name: string, id: number}[] = [];
+  engineers: EngineerSchema[] = [];
   filteredOptions: Observable<{name: string, id: number}[]>;
   readonly roadNumbers: WritableSignal<string[]> = signal([]);
 
@@ -56,6 +57,7 @@ export class AddCardFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.engineerService.get().subscribe(engineers => {
+      this.engineers = engineers;
       this.engineerNameOptions = engineers.map(e => ({name: `${e.lastName}, ${e.firstName}`, id: e.id}));
     })
 
@@ -97,11 +99,27 @@ export class AddCardFormComponent implements OnInit {
     event.chipInput!.clear();
   }
 
-  openEditEngineerForm(): void {
+  openNewEngineerForm(): void {
+    const selectedEngineer = this.engineers.find(
+      e => e.id === (this.formGroup.controls.engineerName.value as {name: string; id: number}).id);
+
     this.dialog.open(EditEngineerFormComponent, {
       height: '500px',
       width: '500px'
-    })
+    });
+  }
+
+  openEditEngineerForm(): void {
+    const selectedEngineer = this.engineers.find(
+      e => e.id === (this.formGroup.controls.engineerName.value as {name: string; id: number}).id);
+
+    this.dialog.open(EditEngineerFormComponent, {
+      height: '500px',
+      width: '500px',
+      data: {
+        engineer: selectedEngineer
+      }
+    });
   }
 
   displayName(engineer: {name: string; id: number}) {

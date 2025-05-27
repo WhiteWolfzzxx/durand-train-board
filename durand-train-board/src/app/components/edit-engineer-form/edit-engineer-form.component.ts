@@ -33,12 +33,14 @@ export class EditEngineerFormComponent implements OnInit {
     private engineerService: EngineerService) {}
 
   ngOnInit(): void {
+    const engineer = this.data?.engineer;
+
     this.formGroup = this.fb.group<EditEngineerFormGroup>({
-      firstName: new FormControl('', {nonNullable: true}),
-      lastName: new FormControl('', {nonNullable: true}),
-      image1: new FormControl(null),
-      image2: new FormControl(null),
-      image3: new FormControl(null)
+      firstName: new FormControl(engineer?.firstName ?? '', {nonNullable: true}),
+      lastName: new FormControl(engineer?.lastName ?? '', {nonNullable: true}),
+      image1: new FormControl(engineer?.image1),
+      image2: new FormControl(engineer?.image2),
+      image3: new FormControl(engineer?.image3)
     });
   }
 
