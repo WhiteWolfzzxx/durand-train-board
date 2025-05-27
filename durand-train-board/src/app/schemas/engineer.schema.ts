@@ -21,13 +21,13 @@ export class EngineerSchema {
     type: 'blob',
     nullable: true
   })
-  image2: Blob | null;
+  image2: Uint8Array | null;
 
   @Column({
     type: 'blob',
     nullable: true
   })
-  image3: Blob | null;
+  image3: Uint8Array | null;
 
   constructor(init?: Partial<EngineerSchema>) {
     Object.assign(this, init);

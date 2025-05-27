@@ -40,6 +40,8 @@ export class AddCardFormComponent implements OnInit {
   filteredOptions: Observable<{name: string, id: number}[]>;
   readonly roadNumbers: WritableSignal<string[]> = signal([]);
   image1Url: string;
+  image2Url: string;
+  image3Url: string;
 
   announcer = inject(LiveAnnouncer);
 
@@ -77,12 +79,11 @@ export class AddCardFormComponent implements OnInit {
     this.formGroup.controls.engineerName.valueChanges.subscribe(e => {
       const selectedEngineer = (e as {name: string; id: number});
       if (!!selectedEngineer.id) {
-        const imageFile = this.engineers.find(en => en.id === selectedEngineer.id)?.image1;
-        let reader = new FileReader();
-        reader.onload = (event: any) => {
-          this.image1Url = event.target.result;
-        }
-        reader.readAsDataURL(new Blob([(imageFile as Uint8Array<ArrayBufferLike>)]));
+        const engineer = this.engineers.find(en => en.id === selectedEngineer.id);
+        const imageFile = this.engineers.find(en => en.id === selectedEngineer.id)?.image1 as Uint8Array<ArrayBufferLike>;
+        this.setImage1Url(engineer?.image1 as Uint8Array<ArrayBufferLike>);
+        this.setImage2Url(engineer?.image2 as Uint8Array<ArrayBufferLike>);
+        this.setImage3Url(engineer?.image3 as Uint8Array<ArrayBufferLike>);
       }
     })
   }
@@ -143,6 +144,30 @@ export class AddCardFormComponent implements OnInit {
     const filterValue = (value as {name: string, id: number})?.name?.toLowerCase() ?? (value as string).toLowerCase();
 
     return this.engineerNameOptions.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
+
+  private setImage1Url(image: Uint8Array<ArrayBufferLike>): void {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.image1Url = event.target.result;
+    }
+    reader.readAsDataURL(new Blob([image]));
+  }
+
+  private setImage2Url(image: Uint8Array<ArrayBufferLike>): void {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.image2Url = event.target.result;
+    }
+    reader.readAsDataURL(new Blob([image]));
+  }
+
+  private setImage3Url(image: Uint8Array<ArrayBufferLike>): void {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.image3Url = event.target.result;
+    }
+    reader.readAsDataURL(new Blob([image]));
   }
 }
 

@@ -45,6 +45,15 @@
       />
       <mat-hint>Press Enter After Every Entry</mat-hint>
     </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Image</mat-label>
+      <mat-select formControlName="image">
+        <mat-option value="image1"><img [src]="image1Url" alt="image1"/></mat-option>
+        <mat-option value="image2"><img [src]="image2Url" alt="image2"/></mat-option>
+        <mat-option value="image3"><img [src]="image3Url" alt="image3"/></mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <img [src]="image1Url" alt="image1"/>

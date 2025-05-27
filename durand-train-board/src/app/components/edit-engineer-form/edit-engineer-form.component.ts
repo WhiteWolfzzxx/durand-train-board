@@ -26,6 +26,8 @@ import { EngineerService } from '../../services/engineer.service';
 export class EditEngineerFormComponent implements OnInit {
   formGroup: FormGroup<EditEngineerFormGroup>;
   image1Url: string;
+  image2Url: string;
+  image3Url: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: {engineer: EngineerSchema},
@@ -40,8 +42,8 @@ export class EditEngineerFormComponent implements OnInit {
       firstName: new FormControl(engineer?.firstName ?? '', {nonNullable: true}),
       lastName: new FormControl(engineer?.lastName ?? '', {nonNullable: true}),
       image1: new FormControl(null),
-      image2: new FormControl(engineer?.image2),
-      image3: new FormControl(engineer?.image3)
+      image2: new FormControl(null),
+      image3: new FormControl(null)
     });
   }
 
@@ -50,9 +52,9 @@ export class EditEngineerFormComponent implements OnInit {
 
     engineer.firstName = this.formGroup.controls.firstName.value;
     engineer.lastName = this.formGroup.controls.lastName.value;
-    engineer.image1 = this.formGroup.controls.image1.value === null ? null : new Uint8Array(await (this.formGroup.controls.image1.value as Blob).arrayBuffer()) ;
-    engineer.image2 = this.formGroup.controls.image2.value;
-    engineer.image3 = this.formGroup.controls.image3.value;
+    engineer.image1 = this.formGroup.controls.image1.value === null ? null : new Uint8Array(await (this.formGroup.controls.image1.value as Blob).arrayBuffer());
+    engineer.image2 = this.formGroup.controls.image2.value === null ? null : new Uint8Array(await (this.formGroup.controls.image2.value as Blob).arrayBuffer()) ;
+    engineer.image3 = this.formGroup.controls.image3.value === null ? null : new Uint8Array(await (this.formGroup.controls.image3.value as Blob).arrayBuffer()) ;
 
     if (!engineer.id) {
       this.engineerService.add(engineer).subscribe();
@@ -83,6 +85,28 @@ export class EditEngineerFormComponent implements OnInit {
     let reader = new FileReader();
     reader.onload = (event: any) => {
       this.image1Url = event.target.result;
+    }
+    reader.readAsDataURL(file as Blob);
+  }
+
+  onImage2Picked(event: Event) {
+    const file = (event.target as HTMLInputElement)?.files!.item(0);
+    this.formGroup.controls.image2.setValue(file);
+
+    let reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.image2Url = event.target.result;
+    }
+    reader.readAsDataURL(file as Blob);
+  }
+
+  onImage3Picked(event: Event) {
+    const file = (event.target as HTMLInputElement)?.files!.item(0);
+    this.formGroup.controls.image3.setValue(file);
+
+    let reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.image3Url = event.target.result;
     }
     reader.readAsDataURL(file as Blob);
   }

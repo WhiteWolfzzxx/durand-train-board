@@ -19,12 +19,12 @@
 
     <div class="full-width">
       <mat-label>Image 2</mat-label>
-      <input type="file" formControlName="image2">
+      <input type="file" (change)="onImage2Picked($event)">
     </div>
 
     <div class="full-width">
       <mat-label>Image 3</mat-label>
-      <input type="file" formControlName="image3">
+      <input type="file" (change)="onImage3Picked($event)">
     </div>
 
   </div>
