@@ -1,32 +1,32 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-// import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import 'reflect-metadata';
-// import { RollingStockSchema } from '../src/app/schemas/rolling-stock.schema';
-// import { createDatabase } from 'typeorm-extension';
+import { createDatabase } from 'typeorm-extension';
+import { EngineerSchema } from '../src/app/schemas/engineer.schema';
 
 let mainWindow: Electron.BrowserWindow | null;
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 
 const createWindow = async () => {
-    // const options: DataSourceOptions = {
-    //     type: 'sqlite',
-    //     synchronize: true,
-    //     logging: false,
-    //     logger: 'simple-console',
-    //     database: './src/assets/data/database.sqlite',
-    //     entities: [RollingStockSchema]
-    // };
+    const options: DataSourceOptions = {
+        type: 'sqlite',
+        synchronize: true,
+        logging: false,
+        logger: 'simple-console',
+        database: 'database.sqlite',
+        entities: [EngineerSchema]
+    };
 
-    // await createDatabase({
-    //     options,
-    //     ifNotExist: true
-    // });
+    await createDatabase({
+        options,
+        // ifNotExist: true
+    });
 
-    // const dataSource = new DataSource(options);
-    // dataSource.initialize();
+    const dataSource = new DataSource(options);
+    dataSource.initialize();
 
-    // const rollingStockRepo = dataSource.getRepository(RollingStockSchema);
+    const engineerRepo = dataSource.getRepository(EngineerSchema);
 
     mainWindow = new BrowserWindow({
         width: 800,
@@ -37,7 +37,7 @@ const createWindow = async () => {
         },
     });
 
-    mainWindow.loadURL(`file://${__dirname}/durand-train-board/browser/index.html`); // Load your Angular app
+    mainWindow.loadURL(`file://${__dirname}/../durand-train-board/browser/index.html`); // Load your Angular app
 
     // Open the DevTools.
     if (isDevMode) {
@@ -48,29 +48,23 @@ const createWindow = async () => {
         mainWindow = null;
     });
 
-    // ipcMain.on('get-rolling-stock', async (event: any, ...args: any[]) => {
-    //     try {
-    //         event.returnValue = await rollingStockRepo.find({
-    //             order: {
-    //                 reportingMark: 'ASC',
-    //                 number: 'ASC',
-    //                 type: 'ASC'
-    //             }
-    //         });
-    //     } catch (err) {
-    //         throw err;
-    //     }
-    // });
+    ipcMain.on('get-engineers', async (event: any, ...args: any[]) => {
+        try {
+            event.returnValue = await engineerRepo.find();
+        } catch (err) {
+            throw err;
+        }
+    });
 
-    // ipcMain.on('add-rolling-stock', async (event: any, _rollingStock: RollingStockSchema) => {
-    //     try {
-    //         const rollingStock = await rollingStockRepo.create(_rollingStock);
-    //         await rollingStockRepo.save(rollingStock);
-    //         event.returnValue = await rollingStockRepo.find();
-    //     } catch (err) {
-    //         throw err;
-    //     }
-    // });
+    ipcMain.on('add-engineer', async (event: any, _engineer: EngineerSchema) => {
+        try {
+            const engineer = await engineerRepo.create(_engineer);
+            await engineerRepo.save(engineer);
+            event.returnValue = await engineerRepo.find();
+        } catch (err) {
+            throw err;
+        }
+    });
 
     // ipcMain.on('delete-rolling-stock', async (event:any, _rollingStock: RollingStockSchema) => {
     //     try {

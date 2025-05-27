@@ -5,12 +5,13 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { map, Observable, startWith } from 'rxjs';
+import { EditEngineerFormComponent } from '../edit-engineer-form/edit-engineer-form.component';
 
 
 @Component({
@@ -46,7 +47,7 @@ export class AddCardFormComponent implements OnInit {
     'West'
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.formGroup = this.fb.group({
@@ -85,6 +86,13 @@ export class AddCardFormComponent implements OnInit {
 
     // Clear the input value
     event.chipInput!.clear();
+  }
+
+  openEditEngineerForm(): void {
+    this.dialog.open(EditEngineerFormComponent, {
+      height: '500px',
+      width: '500px'
+    })
   }
 
   private _filter(value: string): string[] {

@@ -1,0 +1,43 @@
+<mat-dialog-content>
+  <div class="form-container" [formGroup]="formGroup">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="lastName">
+    </mat-form-field>
+
+    <div class="full-width">
+      <mat-label>Image 1</mat-label>
+      <input type="file" formControlName="image1">
+    </div>
+
+    <div class="full-width">
+      <mat-label>Image 2</mat-label>
+      <input type="file" formControlName="image2">
+    </div>
+
+    <div class="full-width">
+      <mat-label>Image 3</mat-label>
+      <input type="file" formControlName="image3">
+    </div>
+
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button class="delete-button">
+    DELETE
+    <mat-icon aria-hidden="false" aria-label="delete engineer" fontIcon="delete_forever"></mat-icon>
+  </button>
+  <button mat-button mat-dialog-close>
+    CANCEL
+  </button>
+  <button mat-raised-button class="save-button" (click)="saveEngineer()" >
+    SAVE
+    <mat-icon aria-hidden="false" aria-label="save engineer" fontIcon="save"></mat-icon>
+  </button>
+</mat-dialog-actions>
