@@ -62,6 +62,11 @@ export class EditEngineerFormComponent implements OnInit {
     this.closeDialog();
   }
 
+  deleteEngineer(): void {
+    const engineerId = this.data.engineer.id;
+    this.engineerService.delete(engineerId).subscribe(() => this.closeDialog());
+  }
+
   closeDialog() {
     this.dialogRef.close();
   }

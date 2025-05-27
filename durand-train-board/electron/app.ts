@@ -66,15 +66,19 @@ const createWindow = async () => {
         }
     });
 
-    // ipcMain.on('delete-rolling-stock', async (event:any, _rollingStock: RollingStockSchema) => {
-    //     try {
-    //         const rollingStock = await rollingStockRepo.create(_rollingStock);
-    //         await rollingStockRepo.remove(rollingStock);
-    //         event.returnValue = await rollingStockRepo.find();
-    //     } catch (err) {
-    //         throw err;
-    //     }
-    // })
+    ipcMain.on('delete-engineer', async (event:any, _engineerId: number) => {
+        try {
+            const engineerToDelete = await engineerRepo.find({
+              where: {
+                id: _engineerId
+              }
+            });
+            await engineerRepo.remove(engineerToDelete);
+            event.returnValue = engineerToDelete;
+        } catch (err) {
+            throw err;
+        }
+    })
 }
 
 app.on('ready', createWindow);

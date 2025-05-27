@@ -19,8 +19,8 @@ export class EngineerService {
       .pipe(catchError(e => throwError(() => new Error(e.json))));
   }
 
-  // delete(rollingStock: RollingStockSchema): Observable<RollingStockSchema[]> {
-  //   return of(this.electron.ipcRenderer.sendSync('delete-rolling-stock', rollingStock))
-  //     .pipe(catchError(e => throwError(() => new Error(e.json))));
-  // }
+  delete(id: number): Observable<EngineerSchema> {
+    return of(this.electron.ipcRenderer.sendSync('delete-engineer', id))
+      .pipe(catchError(e => throwError(() => new Error(e.json))));
+  }
 }
