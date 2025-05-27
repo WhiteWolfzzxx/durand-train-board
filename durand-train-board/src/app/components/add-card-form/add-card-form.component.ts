@@ -12,6 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { map, Observable, startWith } from 'rxjs';
 import { EditEngineerFormComponent } from '../edit-engineer-form/edit-engineer-form.component';
+import { EngineerService } from '../../services/engineer.service';
+import { EngineerSchema } from '../../schemas/engineer.schema';
 
 
 @Component({
@@ -33,8 +35,8 @@ import { EditEngineerFormComponent } from '../edit-engineer-form/edit-engineer-f
 })
 export class AddCardFormComponent implements OnInit {
   formGroup: FormGroup<AddCardForm>;
-  engineerNameOptions: string[] = ['Jain Doe', 'James McGill', 'Walter White'];
-  filteredOptions: Observable<string[]>;
+  engineerNameOptions: {name: string, id: number}[] = [];
+  filteredOptions: Observable<{name: string, id: number}[]>;
   readonly roadNumbers: WritableSignal<string[]> = signal([]);
 
   announcer = inject(LiveAnnouncer);
@@ -47,13 +49,20 @@ export class AddCardFormComponent implements OnInit {
     'West'
   ];
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
+  constructor(
+    private fb: FormBuilder,
+    private dialog: MatDialog,
+    private engineerService: EngineerService) {}
 
   ngOnInit(): void {
+    this.engineerService.get().subscribe(engineers => {
+      this.engineerNameOptions = engineers.map(e => ({name: `${e.lastName}, ${e.firstName}`, id: e.id}));
+    })
+
     this.formGroup = this.fb.group({
       route: this.fb.control('', {nonNullable:true}),
       road: this.fb.control('', {nonNullable:true}),
-      engineerName: this.fb.control('', {nonNullable:true}),
+      engineerName: this.fb.control<{name: string; id: number} | string>('', {nonNullable: true}),
       roadNumbers: this.fb.control([])
     });
 
@@ -95,16 +104,20 @@ export class AddCardFormComponent implements OnInit {
     })
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  displayName(engineer: {name: string; id: number}) {
+    return engineer.name;
+  }
 
-    return this.engineerNameOptions.filter(option => option.toLowerCase().includes(filterValue));
+  private _filter(value: string | {name: string, id: number}): {name: string; id: number}[] {
+    const filterValue = (value as {name: string, id: number})?.name?.toLowerCase() ?? (value as string).toLowerCase();
+
+    return this.engineerNameOptions.filter(option => option.name.toLowerCase().includes(filterValue));
   }
 }
 
 class AddCardForm {
   route: FormControl<string>;
   road: FormControl<string>;
-  engineerName: FormControl<string>;
+  engineerName: FormControl<{name: string; id: number} | string>;
   roadNumbers: FormControl<any>;
 }

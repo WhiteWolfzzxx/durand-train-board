@@ -14,9 +14,9 @@
                 matInput
                 formControlName="engineerName"
                 [matAutocomplete]="auto">
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayName">
           @for (option of filteredOptions | async; track option) {
-            <mat-option [value]="option">{{option}}</mat-option>
+            <mat-option [value]="option">{{option.name}}</mat-option>
           }
         </mat-autocomplete>
     </mat-form-field>
