@@ -74,18 +74,17 @@ export class AddCardFormComponent implements OnInit {
       map(value => this._filter(value || '')),
     );
 
-    // this.formGroup.controls.engineerName.valueChanges.subscribe(e => {
-    //   const selectedEngineer = (e as {name: string; id: number});
-    //   if (!!selectedEngineer.id) {
-    //     const imageFile = this.engineers.find(en => en.id === selectedEngineer.id)?.image1;
-    //     console.log('image', imageFile)
-    //     let reader = new FileReader();
-    //     reader.onload = (event: any) => {
-    //       this.image1Url = event.target.result;
-    //     }
-    //     reader.readAsDataURL(imageFile as Blob);
-    //   }
-    // })
+    this.formGroup.controls.engineerName.valueChanges.subscribe(e => {
+      const selectedEngineer = (e as {name: string; id: number});
+      if (!!selectedEngineer.id) {
+        const imageFile = this.engineers.find(en => en.id === selectedEngineer.id)?.image1;
+        let reader = new FileReader();
+        reader.onload = (event: any) => {
+          this.image1Url = event.target.result;
+        }
+        reader.readAsDataURL(new Blob([(imageFile as Uint8Array<ArrayBufferLike>)]));
+      }
+    })
   }
 
   removeRoadNumber(keyword: string) {
