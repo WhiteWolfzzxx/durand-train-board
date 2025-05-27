@@ -39,6 +39,7 @@ export class AddCardFormComponent implements OnInit {
   engineers: EngineerSchema[] = [];
   filteredOptions: Observable<{name: string, id: number}[]>;
   readonly roadNumbers: WritableSignal<string[]> = signal([]);
+  image1Url: string;
 
   announcer = inject(LiveAnnouncer);
 
@@ -72,6 +73,19 @@ export class AddCardFormComponent implements OnInit {
       startWith(''),
       map(value => this._filter(value || '')),
     );
+
+    // this.formGroup.controls.engineerName.valueChanges.subscribe(e => {
+    //   const selectedEngineer = (e as {name: string; id: number});
+    //   if (!!selectedEngineer.id) {
+    //     const imageFile = this.engineers.find(en => en.id === selectedEngineer.id)?.image1;
+    //     console.log('image', imageFile)
+    //     let reader = new FileReader();
+    //     reader.onload = (event: any) => {
+    //       this.image1Url = event.target.result;
+    //     }
+    //     reader.readAsDataURL(imageFile as Blob);
+    //   }
+    // })
   }
 
   removeRoadNumber(keyword: string) {

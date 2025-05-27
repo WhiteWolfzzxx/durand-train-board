@@ -25,6 +25,7 @@ import { EngineerService } from '../../services/engineer.service';
 })
 export class EditEngineerFormComponent implements OnInit {
   formGroup: FormGroup<EditEngineerFormGroup>;
+  image1Url: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: {engineer: EngineerSchema},
@@ -38,18 +39,18 @@ export class EditEngineerFormComponent implements OnInit {
     this.formGroup = this.fb.group<EditEngineerFormGroup>({
       firstName: new FormControl(engineer?.firstName ?? '', {nonNullable: true}),
       lastName: new FormControl(engineer?.lastName ?? '', {nonNullable: true}),
-      image1: new FormControl(engineer?.image1),
+      image1: new FormControl(null),
       image2: new FormControl(engineer?.image2),
       image3: new FormControl(engineer?.image3)
     });
   }
 
-  saveEngineer(): void {
+  async saveEngineer(): Promise<void> {
     const engineer = new EngineerSchema(this.data?.engineer);
 
     engineer.firstName = this.formGroup.controls.firstName.value;
     engineer.lastName = this.formGroup.controls.lastName.value;
-    engineer.image1 = this.formGroup.controls.image1.value;
+    engineer.image1 = this.formGroup.controls.image1.value === null ? null : new Uint8Array(await (this.formGroup.controls.image1.value as Blob).arrayBuffer()) ;
     engineer.image2 = this.formGroup.controls.image2.value;
     engineer.image3 = this.formGroup.controls.image3.value;
 
@@ -70,12 +71,27 @@ export class EditEngineerFormComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
   }
+
+  getImage1Url(): any {
+    return this.formGroup.controls.image1.value;
+  }
+
+  onImage1Picked(event: Event) {
+    const file = (event.target as HTMLInputElement)?.files!.item(0);
+    this.formGroup.controls.image1.setValue(file);
+
+    let reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.image1Url = event.target.result;
+    }
+    reader.readAsDataURL(file as Blob);
+  }
 }
 
 class EditEngineerFormGroup {
   firstName: FormControl<string>;
   lastName: FormControl<string>;
-  image1: FormControl<Blob | null>;
+  image1: FormControl<File | null>;
   image2: FormControl<Blob | null>;
   image3: FormControl<Blob | null>;
 }

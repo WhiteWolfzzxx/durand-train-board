@@ -15,7 +15,7 @@ export class EngineerSchema {
     type: 'blob',
     nullable: true
   })
-  image1: Blob | null;
+  image1: Uint8Array | null;
 
   @Column({
     type: 'blob',
