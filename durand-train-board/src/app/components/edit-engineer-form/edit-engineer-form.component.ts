@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { EngineerSchema } from '../../schemas/engineer.schema';
 import { EngineerService } from '../../services/engineer.service';
-import { ElectronService } from 'ngx-electron';
 
 @Component({
   selector: 'app-edit-engineer-form',
@@ -17,10 +17,8 @@ import { ElectronService } from 'ngx-electron';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatIconModule
-  ],
-  providers: [
-    ElectronService
+    MatIconModule,
+    MatButtonModule
   ],
   templateUrl: './edit-engineer-form.component.html',
   styleUrl: './edit-engineer-form.component.scss'
@@ -45,7 +43,7 @@ export class EditEngineerFormComponent implements OnInit {
   }
 
   saveEngineer(): void {
-    const engineer = new EngineerSchema(this.data.engineer);
+    const engineer = new EngineerSchema(this.data?.engineer);
 
     engineer.firstName = this.formGroup.controls.firstName.value;
     engineer.lastName = this.formGroup.controls.lastName.value;

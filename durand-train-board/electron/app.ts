@@ -20,7 +20,7 @@ const createWindow = async () => {
 
     await createDatabase({
         options,
-        // ifNotExist: true
+        ifNotExist: true
     });
 
     const dataSource = new DataSource(options);
