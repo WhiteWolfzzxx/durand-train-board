@@ -14,6 +14,8 @@ import { map, Observable, startWith } from 'rxjs';
 import { EditEngineerFormComponent } from '../edit-engineer-form/edit-engineer-form.component';
 import { EngineerService } from '../../services/engineer.service';
 import { EngineerSchema } from '../../schemas/engineer.schema';
+import { RailroadCardsService } from '../../services/railroad-cards.service';
+import { Card } from '../../models/card';
 
 
 @Component({
@@ -56,7 +58,8 @@ export class AddCardFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private engineerService: EngineerService) {}
+    private engineerService: EngineerService,
+    private cardsService: RailroadCardsService) {}
 
   ngOnInit(): void {
     this.engineerService.get().subscribe(engineers => {
@@ -68,7 +71,8 @@ export class AddCardFormComponent implements OnInit {
       route: this.fb.control('', {nonNullable:true}),
       road: this.fb.control('', {nonNullable:true}),
       engineerName: this.fb.control<{name: string; id: number} | string>('', {nonNullable: true}),
-      roadNumbers: this.fb.control([])
+      roadNumbers: this.fb.control([]),
+      image: this.fb.control<string | null>(null)
     });
 
     this.filteredOptions = this.formGroup.controls.engineerName.valueChanges.pipe(
@@ -80,7 +84,6 @@ export class AddCardFormComponent implements OnInit {
       const selectedEngineer = (e as {name: string; id: number});
       if (!!selectedEngineer.id) {
         const engineer = this.engineers.find(en => en.id === selectedEngineer.id);
-        const imageFile = this.engineers.find(en => en.id === selectedEngineer.id)?.image1 as Uint8Array<ArrayBufferLike>;
         this.setImage1Url(engineer?.image1 as Uint8Array<ArrayBufferLike>);
         this.setImage2Url(engineer?.image2 as Uint8Array<ArrayBufferLike>);
         this.setImage3Url(engineer?.image3 as Uint8Array<ArrayBufferLike>);
@@ -114,12 +117,9 @@ export class AddCardFormComponent implements OnInit {
   }
 
   openNewEngineerForm(): void {
-    const selectedEngineer = this.engineers.find(
-      e => e.id === (this.formGroup.controls.engineerName.value as {name: string; id: number}).id);
-
     this.dialog.open(EditEngineerFormComponent, {
-      height: '500px',
-      width: '500px'
+      height: '800px',
+      width: '800px'
     });
   }
 
@@ -128,8 +128,8 @@ export class AddCardFormComponent implements OnInit {
       e => e.id === (this.formGroup.controls.engineerName.value as {name: string; id: number}).id);
 
     this.dialog.open(EditEngineerFormComponent, {
-      height: '500px',
-      width: '500px',
+      height: '800px',
+      width: '800px',
       data: {
         engineer: selectedEngineer
       }
@@ -138,6 +138,38 @@ export class AddCardFormComponent implements OnInit {
 
   displayName(engineer: {name: string; id: number}) {
     return engineer.name;
+  }
+
+  addCard(): void {
+    const selectedEngineer = this.getSelectedEngineer();
+
+    this.cardsService.addCard(new Card({
+      engineerName: `${selectedEngineer?.firstName} ${selectedEngineer?.lastName}`,
+      roadNumbers: this.formGroup.controls.roadNumbers.value,
+      route: this.formGroup.controls.route.value,
+      image: this.getImage(),
+      imageOption: this.formGroup.controls.image.value ?? ''
+    }));
+
+    this.dialog.closeAll();
+  }
+
+  private getImage(): Uint8Array<ArrayBufferLike> | null {
+    switch (this.formGroup.controls.image.value) {
+      case 'image1':
+        return this.getSelectedEngineer()?.image1 ?? null;
+      case 'image2':
+        return this.getSelectedEngineer()?.image2 ?? null;
+      case 'image3':
+        return this.getSelectedEngineer()?.image3 ?? null;
+      default:
+        return null;
+    }
+  }
+
+  private getSelectedEngineer(): EngineerSchema | null {
+    return this.engineers.find(
+      e => e.id === (this.formGroup.controls.engineerName.value as {name: string; id: number}).id) ?? null;
   }
 
   private _filter(value: string | {name: string, id: number}): {name: string; id: number}[] {
@@ -176,4 +208,5 @@ class AddCardForm {
   road: FormControl<string>;
   engineerName: FormControl<{name: string; id: number} | string>;
   roadNumbers: FormControl<any>;
+  image: FormControl<string | null>;
 }

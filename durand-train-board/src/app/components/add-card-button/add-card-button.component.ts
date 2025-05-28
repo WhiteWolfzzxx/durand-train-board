@@ -16,8 +16,8 @@ export class AddCardButtonComponent {
 
   openAddNewCardForm(): void {
     this.dialog.open(AddCardFormComponent, {
-      height: '500px',
-      width: '500px'
+      height: '800px',
+      width: '800px'
     })
   }
 }
