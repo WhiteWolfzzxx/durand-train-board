@@ -7,6 +7,7 @@
         <mat-select formControlName="route">
             <mat-option *ngFor="let routeOption of routeOptions" [value]="routeOption">{{routeOption}}</mat-option>
         </mat-select>
+        <mat-error *ngIf="formGroup.controls.route.invalid">Route is required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
@@ -21,6 +22,7 @@
             <mat-option [value]="option">{{option.name}}</mat-option>
           }
         </mat-autocomplete>
+        <mat-error *ngIf="formGroup.controls.engineerName.invalid">Engineer is required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
@@ -42,8 +44,6 @@
       />
       <mat-hint>Press Enter After Every Road Number Entry</mat-hint>
     </mat-form-field>
-
-    <pre>{{this.formGroup.controls.roadNumbers.value | json}}</pre>
 
     <mat-form-field appearance="outline" class="full-width image-input">
       <mat-label>Image</mat-label>
@@ -78,11 +78,23 @@
     <button mat-button mat-dialog-close>
       CLOSE
     </button>
-    <button mat-raised-button class="add-button" *ngIf="!data?.card?.id" (click)="addCard()">
+    <button
+      mat-raised-button
+      class="add-button"
+      *ngIf="!data?.card?.id"
+      (click)="addCard()"
+      [disabled]="isSaveDisabled()"
+      [ngClass]="{'disabled' : isSaveDisabled()}">
       ADD
       <mat-icon aria-hidden="false" aria-label="add card" fontIcon="add"></mat-icon>
     </button>
-    <button mat-raised-button class="add-button" *ngIf="!!data?.card?.id" (click)="saveCard()">
+    <button
+      mat-raised-button
+      class="add-button"
+      *ngIf="!!data?.card?.id"
+      (click)="saveCard()"
+      [disabled]="isSaveDisabled()"
+      [ngClass]="{'disabled' : isSaveDisabled()}">
       SAVE
       <mat-icon aria-hidden="false" aria-label="save card" fontIcon="save"></mat-icon>
     </button>

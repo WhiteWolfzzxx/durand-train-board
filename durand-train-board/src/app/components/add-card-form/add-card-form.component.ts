@@ -1,7 +1,7 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { Component, Inject, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -74,8 +74,8 @@ export class AddCardFormComponent implements OnInit {
       console.log('card', card);
 
       this.formGroup = this.fb.group({
-        route: this.fb.control(card?.route ?? '', {nonNullable:true}),
-        engineerName: this.fb.control<{name: string; id: number} | string>(engineerName, {nonNullable: true}),
+        route: this.fb.control(card?.route ?? '', {nonNullable:true, validators: Validators.required}),
+        engineerName: this.fb.control<{name: string; id: number} | string>(engineerName, {nonNullable: true, validators: Validators.required}),
         roadNumbers: this.fb.control(card?.roadNumbers ?? []),
         image: this.fb.control<string | null>(card?.imageOption)
       });
@@ -161,6 +161,10 @@ export class AddCardFormComponent implements OnInit {
 
   isEditEngineerDisabled(): boolean {
     return !(this.formGroup.controls.engineerName.value as {name: string; id: number})?.id;
+  }
+
+  isSaveDisabled(): boolean {
+    return !this.formGroup.valid || this.isEditEngineerDisabled();
   }
 
   addCard(): void {
