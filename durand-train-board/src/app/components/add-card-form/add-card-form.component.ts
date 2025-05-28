@@ -56,42 +56,53 @@ export class AddCardFormComponent implements OnInit {
   ];
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: {card: Card},
+    @Inject(MAT_DIALOG_DATA) public data: {card: Card},
     private fb: FormBuilder,
     private dialog: MatDialog,
     private engineerService: EngineerService,
     private cardsService: RailroadCardsService) {}
 
   ngOnInit(): void {
+    const card = this.data?.card;
+
     this.engineerService.get().subscribe(engineers => {
       this.engineers = engineers;
       this.engineerNameOptions = engineers.map(e => ({name: `${e.lastName}, ${e.firstName}`, id: e.id}));
-    })
 
-    const card = this.data?.card;
-    const engineerName = this.engineerNameOptions.find(e => e.id === card?.engineerId)?.name ?? '';
+      const engineerName = this.engineerNameOptions.find(e => e.id === card?.engineerId) ?? '';
 
-    this.formGroup = this.fb.group({
-      route: this.fb.control(card?.route ?? '', {nonNullable:true}),
-      engineerName: this.fb.control<{name: string; id: number} | string>(engineerName, {nonNullable: true}),
-      roadNumbers: this.fb.control(card?.roadNumbers ?? []),
-      image: this.fb.control<string | null>(card?.imageOption)
-    });
+      console.log('card', card);
 
-    this.filteredOptions = this.formGroup.controls.engineerName.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
+      this.formGroup = this.fb.group({
+        route: this.fb.control(card?.route ?? '', {nonNullable:true}),
+        engineerName: this.fb.control<{name: string; id: number} | string>(engineerName, {nonNullable: true}),
+        roadNumbers: this.fb.control(card?.roadNumbers ?? []),
+        image: this.fb.control<string | null>(card?.imageOption)
+      });
 
-    this.formGroup.controls.engineerName.valueChanges.subscribe(e => {
-      const selectedEngineer = (e as {name: string; id: number});
-      if (!!selectedEngineer.id) {
-        const engineer = this.engineers.find(en => en.id === selectedEngineer.id);
-        this.setImage1Url(engineer?.image1 as Uint8Array<ArrayBufferLike>);
-        this.setImage2Url(engineer?.image2 as Uint8Array<ArrayBufferLike>);
-        this.setImage3Url(engineer?.image3 as Uint8Array<ArrayBufferLike>);
+      if (engineerName) {
+        this.setImage1Url(this.getSelectedEngineer()?.image1 as Uint8Array<ArrayBufferLike>);
+        this.setImage2Url(this.getSelectedEngineer()?.image2 as Uint8Array<ArrayBufferLike>);
+        this.setImage3Url(this.getSelectedEngineer()?.image3 as Uint8Array<ArrayBufferLike>);
+
+        card.roadNumbers.forEach(rn => this.addRoadNumber(rn));
       }
-    })
+
+      this.filteredOptions = this.formGroup.controls.engineerName.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filter(value || '')),
+      );
+
+      this.formGroup.controls.engineerName.valueChanges.subscribe(e => {
+        const selectedEngineer = (e as {name: string; id: number});
+        if (!!selectedEngineer.id) {
+          const engineer = this.engineers.find(en => en.id === selectedEngineer.id);
+          this.setImage1Url(engineer?.image1 as Uint8Array<ArrayBufferLike>);
+          this.setImage2Url(engineer?.image2 as Uint8Array<ArrayBufferLike>);
+          this.setImage3Url(engineer?.image3 as Uint8Array<ArrayBufferLike>);
+        }
+      });
+    });
   }
 
   removeRoadNumber(keyword: string) {
@@ -107,7 +118,12 @@ export class AddCardFormComponent implements OnInit {
     });
   }
 
-  addRoadNumber(event: MatChipInputEvent): void {
+  addRoadNumber(event: MatChipInputEvent | string): void {
+    if (typeof event === 'string') {
+      this.roadNumbers.update(keywords => [...keywords, event]);
+      return;
+    }
+
     const value = (event.value || '').trim();
 
     // Add our keyword
@@ -143,6 +159,10 @@ export class AddCardFormComponent implements OnInit {
     return engineer.name;
   }
 
+  isEditEngineerDisabled(): boolean {
+    return !(this.formGroup.controls.engineerName.value as {name: string; id: number})?.id;
+  }
+
   addCard(): void {
     const selectedEngineer = this.getSelectedEngineer();
 
@@ -153,6 +173,22 @@ export class AddCardFormComponent implements OnInit {
       route: this.formGroup.controls.route.value,
       image: this.getImage(),
       imageOption: this.formGroup.controls.image.value ?? ''
+    }));
+
+    this.dialog.closeAll();
+  }
+
+  saveCard(): void {
+    const selectedEngineer = this.getSelectedEngineer();
+
+    this.cardsService.updateCard(new Card({
+      engineerId: selectedEngineer?.id,
+      engineerName: `${selectedEngineer?.firstName} ${selectedEngineer?.lastName}`,
+      id: this.data?.card?.id,
+      image: this.getImage(),
+      imageOption: this.formGroup.controls.image.value ?? '',
+      roadNumbers: this.roadNumbers(),
+      route: this.formGroup.controls.route.value
     }));
 
     this.dialog.closeAll();

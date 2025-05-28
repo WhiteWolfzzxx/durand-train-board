@@ -1,6 +1,6 @@
 .form-container {
-    width: calc(100% - 20px);
-    margin: 10px;
+    width: 100%;
+    margin-top: 10px;
 }
 
 .full-width {
@@ -10,4 +10,15 @@
 .add-button {
   background-color: var(--primary-color) !important;
   color: var(--font-color) !important;
+}
+
+.action-buttons {
+  width: 100%;
+  row-gap: 10px;
+  display: grid;
+  grid-template-columns: min-content 1fr min-content min-content;
+}
+
+.image-input {
+  margin-top: 10px;
 }

@@ -1,3 +1,5 @@
+<h2 mat-dialog-title *ngIf="!data?.card?.id">Add Railroad Card</h2>
+<h2 mat-dialog-title *ngIf="!!data?.card?.id">Edit Railroad Card</h2>
 <mat-dialog-content>
   <div class="form-container" [formGroup]="formGroup">
     <mat-form-field appearance="outline" class="full-width">
@@ -38,11 +40,18 @@
         [matChipInputFor]="chipGrid"
         (matChipInputTokenEnd)="addRoadNumber($event)"
       />
-      <mat-hint>Press Enter After Every Entry</mat-hint>
+      <mat-hint>Press Enter After Every Road Number Entry</mat-hint>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <pre>{{this.formGroup.controls.roadNumbers.value | json}}</pre>
+
+    <mat-form-field appearance="outline" class="full-width image-input">
       <mat-label>Image</mat-label>
+      <mat-select-trigger>
+        <img *ngIf="formGroup.controls.image.value === 'image1'" [src]="image1Url" alt="image1" width="300px"/>
+        <img *ngIf="formGroup.controls.image.value === 'image2'" [src]="image2Url" alt="image2" width="300px"/>
+        <img *ngIf="formGroup.controls.image.value === 'image3'" [src]="image3Url" alt="image3" width="300px"/>
+      </mat-select-trigger>
       <mat-select formControlName="image">
         <mat-option value="image1"><img [src]="image1Url" alt="image1" width="300px"/></mat-option>
         <mat-option value="image2"><img [src]="image2Url" alt="image2" width="300px"/></mat-option>
@@ -50,22 +59,32 @@
       </mat-select>
     </mat-form-field>
   </div>
-
-  <img [src]="image1Url" alt="image1"/>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button (click)="openNewEngineerForm()">
-    ADD NEW ENGINEER
-  </button>
-  <button mat-raised-button (click)="openEditEngineerForm()">
-    EDIT ENGINEER
-  </button>
-  <button mat-button mat-dialog-close>
-    CLOSE
-  </button>
-  <button mat-raised-button class="add-button" (click)="addCard()">
-    ADD
-    <mat-icon aria-hidden="false" aria-label="add card" fontIcon="add"></mat-icon>
-  </button>
+  <div class="action-buttons">
+    <button mat-raised-button (click)="openNewEngineerForm()">
+      ADD NEW ENGINEER
+    </button>
+
+    <div></div>
+    <div></div>
+    <div></div>
+
+    <button mat-raised-button (click)="openEditEngineerForm()" [disabled]="isEditEngineerDisabled()">
+      EDIT ENGINEER
+    </button>
+    <div></div>
+    <button mat-button mat-dialog-close>
+      CLOSE
+    </button>
+    <button mat-raised-button class="add-button" *ngIf="!data?.card?.id" (click)="addCard()">
+      ADD
+      <mat-icon aria-hidden="false" aria-label="add card" fontIcon="add"></mat-icon>
+    </button>
+    <button mat-raised-button class="add-button" *ngIf="!!data?.card?.id" (click)="saveCard()">
+      SAVE
+      <mat-icon aria-hidden="false" aria-label="save card" fontIcon="save"></mat-icon>
+    </button>
+  </div>
 </mat-dialog-actions>
