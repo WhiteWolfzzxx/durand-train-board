@@ -23,6 +23,8 @@ export class RailroadCardComponent implements OnInit {
   ngOnInit(): void {
     if (this.card.image !== null) {
       this.setImageUrl(this.card.image);
+    } else {
+      this.imageUrl = this.getRandomImage();
     }
   }
 
@@ -38,6 +40,20 @@ export class RailroadCardComponent implements OnInit {
         card: this.card
       }
     });
+  }
+
+  getRandomImage(): string {
+    if (this.card.route === "Ann Arbor") {
+      return `./assets/images/ann_arbor${this.getRandomIntInclusive(1, 3)}.jpg`;
+    }
+
+    return `./assets/images/GTW${this.getRandomIntInclusive(1, 3)}.jpg`;
+  }
+
+  private getRandomIntInclusive(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   private setImageUrl(image: Uint8Array<ArrayBufferLike>): void {

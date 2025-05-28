@@ -71,8 +71,6 @@ export class AddCardFormComponent implements OnInit {
 
       const engineerName = this.engineerNameOptions.find(e => e.id === card?.engineerId) ?? '';
 
-      console.log('card', card);
-
       this.formGroup = this.fb.group({
         route: this.fb.control(card?.route ?? '', {nonNullable:true, validators: Validators.required}),
         engineerName: this.fb.control<{name: string; id: number} | string>(engineerName, {nonNullable: true, validators: Validators.required}),
