@@ -22,11 +22,6 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Road Reporting Mark</mat-label>
-        <input matInput placeholder="GTW" formControlName="road">
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Road Numbers</mat-label>
       <mat-chip-grid #chipGrid aria-label="Enter Road Numbers" formControlName="roadNumbers">
         @for (roadNumber of roadNumbers(); track roadNumber) {

@@ -18,6 +18,6 @@ export class AddCardButtonComponent {
     this.dialog.open(AddCardFormComponent, {
       height: '800px',
       width: '800px'
-    })
+    });
   }
 }

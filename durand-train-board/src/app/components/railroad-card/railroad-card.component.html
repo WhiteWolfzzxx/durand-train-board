@@ -1,18 +1,16 @@
 <mat-card appearance="outlined">
   <mat-card-header>
-    <mat-card-title>West</mat-card-title>
-    <mat-card-subtitle>Mitchell Loe</mat-card-subtitle>
+    <mat-card-title>{{card.route}}</mat-card-title>
+    <mat-card-subtitle>{{card.engineerName}}</mat-card-subtitle>
   </mat-card-header>
-  <img mat-card-image src="./assets/images/CSX.jpg" alt="Photo of a Shiba Inu">
+  <img mat-card-image src="./assets/images/CSX.jpg" alt="Image of train">
   <mat-card-content>
     <ul>
-      <li>8888</li>
-      <li>8484</li>
-      <li>12345</li>
+      <li *ngFor="let roadNumber of card.roadNumbers">{{roadNumber}}</li>
     </ul>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button>REMOVE <mat-icon aria-hidden="false" aria-label="delete card" fontIcon="delete"></mat-icon></button>
-    <button mat-button>EDIT <mat-icon aria-hidden="false" aria-label="edit card" fontIcon="mode_edit"></mat-icon></button>
+    <button mat-button (click)="remove()">REMOVE <mat-icon aria-hidden="false" aria-label="delete card" fontIcon="delete"></mat-icon></button>
+    <button mat-button (click)="edit()">EDIT <mat-icon aria-hidden="false" aria-label="edit card" fontIcon="mode_edit"></mat-icon></button>
   </mat-card-actions>
 </mat-card>

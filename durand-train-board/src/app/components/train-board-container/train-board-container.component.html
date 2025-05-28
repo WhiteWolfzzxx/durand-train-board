@@ -1,7 +1,7 @@
 <div class="container">
   <app-app-bar />
   <div class="content">
-    <app-railroad-card *ngFor="let card of getCards()" />
+    <app-railroad-card *ngFor="let card of getCards()" [card]="card" />
   </div>
 </div>
 

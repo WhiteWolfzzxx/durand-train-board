@@ -1,11 +1,11 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, Inject, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -56,6 +56,7 @@ export class AddCardFormComponent implements OnInit {
   ];
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) private data: {card: Card},
     private fb: FormBuilder,
     private dialog: MatDialog,
     private engineerService: EngineerService,
@@ -67,12 +68,14 @@ export class AddCardFormComponent implements OnInit {
       this.engineerNameOptions = engineers.map(e => ({name: `${e.lastName}, ${e.firstName}`, id: e.id}));
     })
 
+    const card = this.data?.card;
+    const engineerName = this.engineerNameOptions.find(e => e.id === card?.engineerId)?.name ?? '';
+
     this.formGroup = this.fb.group({
-      route: this.fb.control('', {nonNullable:true}),
-      road: this.fb.control('', {nonNullable:true}),
-      engineerName: this.fb.control<{name: string; id: number} | string>('', {nonNullable: true}),
-      roadNumbers: this.fb.control([]),
-      image: this.fb.control<string | null>(null)
+      route: this.fb.control(card?.route ?? '', {nonNullable:true}),
+      engineerName: this.fb.control<{name: string; id: number} | string>(engineerName, {nonNullable: true}),
+      roadNumbers: this.fb.control(card?.roadNumbers ?? []),
+      image: this.fb.control<string | null>(card?.imageOption)
     });
 
     this.filteredOptions = this.formGroup.controls.engineerName.valueChanges.pipe(
@@ -145,6 +148,7 @@ export class AddCardFormComponent implements OnInit {
 
     this.cardsService.addCard(new Card({
       engineerName: `${selectedEngineer?.firstName} ${selectedEngineer?.lastName}`,
+      engineerId: selectedEngineer?.id,
       roadNumbers: this.formGroup.controls.roadNumbers.value,
       route: this.formGroup.controls.route.value,
       image: this.getImage(),
@@ -205,7 +209,6 @@ export class AddCardFormComponent implements OnInit {
 
 class AddCardForm {
   route: FormControl<string>;
-  road: FormControl<string>;
   engineerName: FormControl<{name: string; id: number} | string>;
   roadNumbers: FormControl<any>;
   image: FormControl<string | null>;
