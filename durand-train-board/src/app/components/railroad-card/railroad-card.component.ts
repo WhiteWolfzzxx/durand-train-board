@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,10 +14,17 @@ import { AddCardFormComponent } from '../add-card-form/add-card-form.component';
   templateUrl: './railroad-card.component.html',
   styleUrl: './railroad-card.component.scss'
 })
-export class RailroadCardComponent {
+export class RailroadCardComponent implements OnInit {
   @Input({required: true}) card: Card;
+  imageUrl: string;
 
   constructor(private cardsService: RailroadCardsService, private dialog: MatDialog) {}
+
+  ngOnInit(): void {
+    if (this.card.image !== null) {
+      this.setImageUrl(this.card.image);
+    }
+  }
 
   remove(): void {
     this.cardsService.deleteCard(this.card.id);
@@ -31,5 +38,13 @@ export class RailroadCardComponent {
         card: this.card
       }
     });
+  }
+
+  private setImageUrl(image: Uint8Array<ArrayBufferLike>): void {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.imageUrl = event.target.result;
+    }
+    reader.readAsDataURL(new Blob([image]));
   }
 }

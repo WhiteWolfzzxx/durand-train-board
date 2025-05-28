@@ -3,7 +3,7 @@
     <mat-card-title>{{card.route}}</mat-card-title>
     <mat-card-subtitle>{{card.engineerName}}</mat-card-subtitle>
   </mat-card-header>
-  <img mat-card-image src="./assets/images/CSX.jpg" alt="Image of train">
+  <img mat-card-image [src]="imageUrl" alt="Image of train">
   <mat-card-content>
     <ul>
       <li *ngFor="let roadNumber of card.roadNumbers">{{roadNumber}}</li>
