@@ -30,7 +30,7 @@ export class EditEngineerFormComponent implements OnInit {
   image3Url: string;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: {engineer: EngineerSchema},
+    @Inject(MAT_DIALOG_DATA) public data: {engineer: EngineerSchema},
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditEngineerFormComponent>,
     private engineerService: EngineerService) {}
@@ -45,6 +45,18 @@ export class EditEngineerFormComponent implements OnInit {
       image2: new FormControl(null),
       image3: new FormControl(null)
     });
+
+    if (!!engineer) {
+      if (engineer.image1 !== null) {
+        this.setImage1Url(engineer.image1);
+      }
+      if (engineer.image2 !== null) {
+        this.setImage2Url(engineer.image2);
+      }
+      if (engineer.image3 !== null) {
+        this.setImage3Url(engineer.image3);
+      }
+    }
   }
 
   async saveEngineer(): Promise<void> {
@@ -52,9 +64,9 @@ export class EditEngineerFormComponent implements OnInit {
 
     engineer.firstName = this.formGroup.controls.firstName.value;
     engineer.lastName = this.formGroup.controls.lastName.value;
-    engineer.image1 = this.formGroup.controls.image1.value === null ? null : new Uint8Array(await (this.formGroup.controls.image1.value as Blob).arrayBuffer());
-    engineer.image2 = this.formGroup.controls.image2.value === null ? null : new Uint8Array(await (this.formGroup.controls.image2.value as Blob).arrayBuffer()) ;
-    engineer.image3 = this.formGroup.controls.image3.value === null ? null : new Uint8Array(await (this.formGroup.controls.image3.value as Blob).arrayBuffer()) ;
+    engineer.image1 = this.formGroup.controls.image1.value === null ? engineer?.image1 ?? null : new Uint8Array(await (this.formGroup.controls.image1.value as Blob).arrayBuffer());
+    engineer.image2 = this.formGroup.controls.image2.value === null ? engineer?.image2 ?? null : new Uint8Array(await (this.formGroup.controls.image2.value as Blob).arrayBuffer()) ;
+    engineer.image3 = this.formGroup.controls.image3.value === null ? engineer?.image3 ?? null : new Uint8Array(await (this.formGroup.controls.image3.value as Blob).arrayBuffer()) ;
 
     if (!engineer.id) {
       this.engineerService.add(engineer).subscribe();
@@ -78,37 +90,49 @@ export class EditEngineerFormComponent implements OnInit {
     return this.formGroup.controls.image1.value;
   }
 
-  onImage1Picked(event: Event) {
+  async onImage1Picked(event: Event) {
     const file = (event.target as HTMLInputElement)?.files!.item(0);
     this.formGroup.controls.image1.setValue(file);
 
-    let reader = new FileReader();
-    reader.onload = (event: any) => {
-      this.image1Url = event.target.result;
-    }
-    reader.readAsDataURL(file as Blob);
+    this.setImage1Url(new Uint8Array(await (file as Blob).arrayBuffer()));
   }
 
-  onImage2Picked(event: Event) {
+  async onImage2Picked(event: Event) {
     const file = (event.target as HTMLInputElement)?.files!.item(0);
     this.formGroup.controls.image2.setValue(file);
 
-    let reader = new FileReader();
-    reader.onload = (event: any) => {
-      this.image2Url = event.target.result;
-    }
-    reader.readAsDataURL(file as Blob);
+    this.setImage2Url(new Uint8Array(await (file as Blob).arrayBuffer()));
   }
 
-  onImage3Picked(event: Event) {
+  async onImage3Picked(event: Event) {
     const file = (event.target as HTMLInputElement)?.files!.item(0);
     this.formGroup.controls.image3.setValue(file);
 
-    let reader = new FileReader();
+    this.setImage3Url(new Uint8Array(await (file as Blob).arrayBuffer()));
+  }
+
+  private setImage1Url(image: Uint8Array<ArrayBufferLike>): void {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.image1Url = event.target.result;
+    }
+    reader.readAsDataURL(new Blob([image]));
+  }
+
+  private setImage2Url(image: Uint8Array<ArrayBufferLike>): void {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      this.image2Url = event.target.result;
+    }
+    reader.readAsDataURL(new Blob([image]));
+  }
+
+  private setImage3Url(image: Uint8Array<ArrayBufferLike>): void {
+    const reader = new FileReader();
     reader.onload = (event: any) => {
       this.image3Url = event.target.result;
     }
-    reader.readAsDataURL(file as Blob);
+    reader.readAsDataURL(new Blob([image]));
   }
 }
 

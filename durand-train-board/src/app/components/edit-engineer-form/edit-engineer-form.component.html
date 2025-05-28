@@ -1,3 +1,5 @@
+<h2 mat-dialog-title *ngIf="!data?.engineer?.id">Add Engineer</h2>
+<h2 mat-dialog-title *ngIf="!!data?.engineer?.id">Edit Engineer</h2>
 <mat-dialog-content>
   <div class="form-container" [formGroup]="formGroup">
     <mat-form-field appearance="outline" class="full-width">
@@ -15,17 +17,21 @@
       <input type="file" (change)="onImage1Picked($event)">
     </div>
 
-    <img [src]="image1Url" alt="image1"/>
+    <img [src]="image1Url" alt="image1" width="300px"/>
 
     <div class="full-width">
       <mat-label>Image 2</mat-label>
       <input type="file" (change)="onImage2Picked($event)">
     </div>
 
+    <img [src]="image2Url" alt="image2" width="300px"/>
+
     <div class="full-width">
       <mat-label>Image 3</mat-label>
       <input type="file" (change)="onImage3Picked($event)">
     </div>
+
+    <img [src]="image3Url" alt="image3" width="300px"/>
 
   </div>
 </mat-dialog-content>
