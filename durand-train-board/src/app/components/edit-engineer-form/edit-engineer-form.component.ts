@@ -1,13 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { EngineerSchema } from '../../schemas/engineer.schema';
 import { EngineerService } from '../../services/engineer.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-edit-engineer-form',
@@ -18,7 +19,8 @@ import { EngineerService } from '../../services/engineer.service';
     MatInputModule,
     MatSelectModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    CommonModule
   ],
   templateUrl: './edit-engineer-form.component.html',
   styleUrl: './edit-engineer-form.component.scss'
@@ -33,7 +35,8 @@ export class EditEngineerFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {engineer: EngineerSchema},
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditEngineerFormComponent>,
-    private engineerService: EngineerService) {}
+    private engineerService: EngineerService,
+    private dialog: MatDialog) {}
 
   ngOnInit(): void {
     const engineer = this.data?.engineer;
@@ -74,12 +77,12 @@ export class EditEngineerFormComponent implements OnInit {
       this.engineerService.update(engineer).subscribe();
     }
 
-    this.closeDialog();
+    this.dialog.closeAll();
   }
 
   deleteEngineer(): void {
     const engineerId = this.data.engineer.id;
-    this.engineerService.delete(engineerId).subscribe(() => this.closeDialog());
+    this.engineerService.delete(engineerId).subscribe(() => this.dialog.closeAll());
   }
 
   closeDialog() {

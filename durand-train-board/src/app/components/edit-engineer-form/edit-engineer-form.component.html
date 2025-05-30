@@ -17,27 +17,27 @@
       <input type="file" (change)="onImage1Picked($event)">
     </div>
 
-    <img [src]="image1Url" alt="image1" width="300px"/>
+    <img [src]="image1Url" alt="image1" width="300px" *ngIf="image1Url"/>
 
     <div class="full-width">
       <mat-label>Image 2</mat-label>
       <input type="file" (change)="onImage2Picked($event)">
     </div>
 
-    <img [src]="image2Url" alt="image2" width="300px"/>
+    <img [src]="image2Url" alt="image2" width="300px" *ngIf="image2Url"/>
 
     <div class="full-width">
       <mat-label>Image 3</mat-label>
       <input type="file" (change)="onImage3Picked($event)">
     </div>
 
-    <img [src]="image3Url" alt="image3" width="300px"/>
+    <img [src]="image3Url" alt="image3" width="300px" *ngIf="image3Url"/>
 
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button class="delete-button" (click)="deleteEngineer()">
+  <button mat-raised-button class="delete-button" (click)="deleteEngineer()" *ngIf="data?.engineer?.id">
     DELETE
     <mat-icon aria-hidden="false" aria-label="delete engineer" fontIcon="delete_forever"></mat-icon>
   </button>
