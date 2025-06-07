@@ -1,4 +1,4 @@
-<mat-card appearance="outlined">
+<mat-card appearance="outlined" class="card">
   <mat-card-header>
     <mat-card-title>{{card.route}}</mat-card-title>
     <mat-card-subtitle>{{card.engineerName}}</mat-card-subtitle>
@@ -9,7 +9,7 @@
       <li *ngFor="let roadNumber of card.roadNumbers">{{roadNumber}}</li>
     </ul>
   </mat-card-content>
-  <mat-card-actions>
+  <mat-card-actions class="action-buttons">
     <button mat-button (click)="remove()">REMOVE <mat-icon aria-hidden="false" aria-label="delete card" fontIcon="delete"></mat-icon></button>
     <button mat-button (click)="edit()">EDIT <mat-icon aria-hidden="false" aria-label="edit card" fontIcon="mode_edit"></mat-icon></button>
   </mat-card-actions>
