@@ -12,3 +12,10 @@
     left: 0;
     bottom: 0;
 }
+
+.road-numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+    padding-top: 15px;
+}

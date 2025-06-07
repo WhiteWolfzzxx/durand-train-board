@@ -5,9 +5,9 @@
   </mat-card-header>
   <img mat-card-image [src]="imageUrl" alt="Image of train">
   <mat-card-content>
-    <ul>
-      <li *ngFor="let roadNumber of card.roadNumbers">{{roadNumber}}</li>
-    </ul>
+    <div class="road-numbers">
+      <span *ngFor="let roadNumber of card.roadNumbers">{{roadNumber}}</span>
+    </div>
   </mat-card-content>
   <mat-card-actions class="action-buttons">
     <button mat-button (click)="remove()">REMOVE <mat-icon aria-hidden="false" aria-label="delete card" fontIcon="delete"></mat-icon></button>
