@@ -1,7 +1,7 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { Component, Inject, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -16,6 +16,7 @@ import { EngineerService } from '../../services/engineer.service';
 import { EngineerSchema } from '../../schemas/engineer.schema';
 import { RailroadCardsService } from '../../services/railroad-cards.service';
 import { Card } from '../../models/card';
+import { EngineNumberValidatorService } from '../../services/engine-number-validator.service';
 
 
 @Component({
@@ -60,7 +61,9 @@ export class AddCardFormComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private engineerService: EngineerService,
-    private cardsService: RailroadCardsService) {}
+    private cardsService: RailroadCardsService,
+    private engineNumberValidatorService: EngineNumberValidatorService
+  ) {}
 
   ngOnInit(): void {
     const card = this.data?.card;
@@ -74,7 +77,7 @@ export class AddCardFormComponent implements OnInit {
       this.formGroup = this.fb.group({
         route: this.fb.control(card?.route ?? '', {nonNullable:true, validators: Validators.required}),
         engineerName: this.fb.control<{name: string; id: number} | string>(engineerName, {nonNullable: true, validators: Validators.required}),
-        roadNumbers: this.fb.control(card?.roadNumbers ?? []),
+        roadNumbers: this.fb.control(card?.roadNumbers ?? [], { validators: this.engineNumberValidator }),
         image: this.fb.control<string | null>(card?.imageOption)
       });
 
@@ -167,15 +170,18 @@ export class AddCardFormComponent implements OnInit {
 
   addCard(): void {
     const selectedEngineer = this.getSelectedEngineer();
+    const engineerName = 
 
     this.cardsService.addCard(new Card({
-      engineerName: `${selectedEngineer?.firstName} ${selectedEngineer?.lastName}`,
+      engineerName: this.getSelectedEngineerName(),
       engineerId: selectedEngineer?.id,
       roadNumbers: this.formGroup.controls.roadNumbers.value,
       route: this.formGroup.controls.route.value,
       image: this.getImage(),
       imageOption: this.formGroup.controls.image.value ?? ''
     }));
+
+    this.engineNumberValidatorService.update(this.getSelectedEngineerName(), this.formGroup.controls.roadNumbers.value)
 
     this.dialog.closeAll();
   }
@@ -185,7 +191,7 @@ export class AddCardFormComponent implements OnInit {
 
     this.cardsService.updateCard(new Card({
       engineerId: selectedEngineer?.id,
-      engineerName: `${selectedEngineer?.firstName} ${selectedEngineer?.lastName}`,
+      engineerName: this.getSelectedEngineerName(),
       id: this.data?.card?.id,
       image: this.getImage(),
       imageOption: this.formGroup.controls.image.value ?? '',
@@ -193,8 +199,18 @@ export class AddCardFormComponent implements OnInit {
       route: this.formGroup.controls.route.value
     }));
 
+    this.engineNumberValidatorService.update(this.getSelectedEngineerName(), this.formGroup.controls.roadNumbers.value);
+
     this.dialog.closeAll();
   }
+
+  engineNumberValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const roadNumbers = this.formGroup.controls.roadNumbers.value as string[];
+    
+    const isValid = this.engineNumberValidatorService.isEngineNumbersValid(this.getSelectedEngineerName(), roadNumbers);
+
+    return isValid === true ? null : { error : isValid };
+  };
 
   private getImage(): Uint8Array<ArrayBufferLike> | null {
     switch (this.formGroup.controls.image.value) {
@@ -212,6 +228,11 @@ export class AddCardFormComponent implements OnInit {
   private getSelectedEngineer(): EngineerSchema | null {
     return this.engineers.find(
       e => e.id === (this.formGroup.controls.engineerName.value as {name: string; id: number}).id) ?? null;
+  }
+
+  private getSelectedEngineerName(): string {
+    const selectedEngineer = this.getSelectedEngineer();
+    return `${selectedEngineer?.firstName} ${selectedEngineer?.lastName}`
   }
 
   private _filter(value: string | {name: string, id: number}): {name: string; id: number}[] {
